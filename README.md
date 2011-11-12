@@ -7,6 +7,12 @@ A Clojure client for the [Parse](http://parse.com) REST API.
 Familiarize yourself with the Parse REST API
 [docs](https://www.parse.com/docs/rest) and create an account/application.
 
+In your project.clj:
+
+```
+[zpracovani "0.0.1-SNAPSHOT"]
+```
+
 ```clojure
 (ns my.app
     (:use zpracovani.core
