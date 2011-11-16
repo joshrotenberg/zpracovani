@@ -11,7 +11,7 @@
   (with-credentials *parse-application-id* *parse-master-key*
     (let [user {:username (re-rand #"[A-Za-z0-9]{10}")
                 :password (re-rand #"[A-Za-z0-9]{10}")}
-          new-user (signup :body user)
+          new-user (signup :user user)
           logged-in (login :username (:username user)
                            :password (:password user))]
       (is (= true (contains? new-user :objectId)))

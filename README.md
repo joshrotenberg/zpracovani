@@ -10,26 +10,25 @@ Familiarize yourself with the Parse REST API
 In your project.clj:
 
 ```
-[zpracovani "0.0.1-SNAPSHOT"]
+[zpracovani "0.0.1"]
 ```
 
 ```clojure
 (ns my.app
-    (:use zpracovani.core
-    	  [zpracovani.api users objects]
-     ....
-))
+  (:use zpracovani.core
+  (:require [zpracovani.api.users :as zu]
+            [zpracovani.api.objects :as zo]))
 
 (def my-app-id "<your application id>")
 (def my-master-key "<your master key>")
 (with-credentials my-app-id my-master-key
     ;; signup a user
-    (signup :body (json-str {:username "jan" :password "secret"}))
+    (zu/signup :user {:username "jan" :password "secret"})
     ;; store an object
-    (create "ToDo" :body (json-str {:date "tomorrow" :task "feed alpacas"}))
+    (zo/create "ToDo" :object {:date "tomorrow" :task "feed alpacas"})
+    ;; etc.
 )
 ```
-
 ## Testing
 
 Specify an application ID and a Master Key in the
