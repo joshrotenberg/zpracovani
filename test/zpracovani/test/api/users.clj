@@ -18,7 +18,7 @@
       (is (= (:username user) (:username logged-in)))
       (is (= logged-in (retrieve (:objectId new-user))))
       (is (contains?
-           (update (:objectId new-user) :body {:rad "things"})
+           (update (:objectId new-user) :update {:rad "things"})
            :updatedAt))
       (is (= "things" (:rad (retrieve (:objectId new-user)))))
       (is (= (retrieve (:objectId new-user))
