@@ -1,25 +1,12 @@
-(ns zpracovani.util
-    (:use [clojure.set :only [rename-keys]])
-    (:require [clojure.string :as str]))
+(ns zpracovani.util)
 
-(defn local-join [parts]
-  (apply str (first parts) (map str/capitalize (rest parts))))
+(defn split-positional-args
+  [args]
+  (let [split-args (split-with (complement keyword?) args)]
+    (conj (list (apply hash-map (second split-args)))
+          (first split-args))
+  ))
 
-(defn lisp-to-camel
-  "Takes a Lisp style variable name and returns a camel case version, first
-character lower, i.e. doof-cha-what-now becomse doofChaWhatNow"
-  [var-name]
-  (let [parts (str/split (name var-name) #"-")
-        joined (local-join parts)]
-    (if (keyword? var-name) (keyword joined) joined)))
-
-(defn transform-args
-  [arg-map]
-  "Given a map of query args, renames using lisp-to-camel and replaces - with _
-   for api-key and auth-token"
-  (let [keys (keys arg-map)]
-    (rename-keys arg-map (zipmap keys (map lisp-to-camel keys)))))
-  
 (defn status-is-server-error
   [status]
   "Return true if the HTTP status denotes a server error"

@@ -1,4 +1,4 @@
-# zpracovani
+# zpracování
 
 A Clojure client for the [Parse](http://parse.com) REST API.
 

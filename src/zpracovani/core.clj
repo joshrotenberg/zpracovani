@@ -20,8 +20,9 @@
      (do 
        ~@body)))
 
-(defn execute-request [request]
+(defn execute-request 
   "Executes the HTTP request and handles the response"
+  [request]
   (let [response (cclient/request request)
         status (:status response)
         body (:body response)
@@ -33,38 +34,39 @@
      (when-not (empty? body)
        (json/read-json (:body response))))))
 
-(defn prepare-request [request-method uri first-args arg-map auth-map]
+(defn prepare-request 
   "Prepares the HTTP request"
-  (let [real-uri (apply format uri first-args)
-        body (:body arg-map) ;; get the post body
-        query-args (dissoc (merge arg-map auth-map) :body)
-        auth (vector (get auth-map :application-id)
-                     (get auth-map :master-key))]
+  [request-method request-uri first-args query-params where body auth]
+  (let [real-uri (apply format request-uri first-args)]
     {:method request-method
      :url real-uri
      :basic-auth auth
-     :query-params query-args
+     :query-params (if-not (empty? where)
+                     (assoc query-params :where (json/json-str where))
+                     query-params)
      :content-type :json
      :headers {"User-Agent" user-agent}
-     :body body}))
+     :body (if-not (empty? body)
+             (json/json-str body))}))
 
 (defmacro def-parse-method
   "Macro to create the Parse API calls"
-  [name request-method path & rest]
+  [name request-method path & [body-keyword]]
   `(defn ~name [& args#]
-     (let [req-uri# (str "https://" *api-url* "/" *api-version*
-                         "/" ~path)
-           split-args# (split-with (complement keyword?) args#)
+     (let [request-uri# (str "https://" *api-url* "/" *api-version* "/" ~path)
+           split-args# (split-positional-args args#) 
            first-args# (first split-args#)
-           arg-map# (transform-args (apply hash-map (second split-args#)))
-           auth-map# (merge (when *application-id*
-                              {:application-id *application-id*})
-                            (when *master-key*
-                              {:master-key *master-key*}))
+           next-args# (second split-args#)
+           auth# (vector *application-id* *master-key*)
+           body# (get next-args# ~body-keyword)
+           where# (:where next-args#)
+           query-params# (dissoc next-args# :where ~body-keyword)
            request# (prepare-request ~request-method
-                                     req-uri#
+                                     request-uri#
                                      first-args#
-                                     arg-map#
-                                     auth-map#)]
+                                     query-params#
+                                     where#
+                                     body#
+                                     auth#)]
        (execute-request request#))))
 
