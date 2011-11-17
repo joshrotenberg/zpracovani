@@ -38,6 +38,11 @@ resources/test.properties file to run the unit tests.
 
 See the [unit tests](https://github.com/joshrotenberg/zpracovani/tree/master/test/zpracovani/test/api).
 
+There is a
+[sample](https://github.com/joshrotenberg/zpracovani/tree/master/test/zpracovani/test/example)
+DSL that wraps up the API and shows how easy it is to put together a
+nice, composable front end for querying.
+
 ## Status
 
 All user and object calls should be supported.

@@ -15,3 +15,7 @@
 (def ^:dynamic *parse-master-key*
   (or (get *props* "parse.master.key")
       (throw (Exception. "supply your Parse Master Key in resources/test.properties to run the tests"))))
+
+(def ^:dynamic *zpracovani-test-class*
+  (or (get *props* "zpracovani.test.class")
+      (throw (Exception. "supply a test class name in resources/test.properties to run the tests"))))
